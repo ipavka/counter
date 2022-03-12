@@ -1,35 +1,74 @@
-.App {
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 600px;
+}
+
+.boardCounter {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 300px;
-    height: 200px;
+    width: 600px;
+    height: 350px;
     border: 2px solid #219ba6;
     border-radius: 7px;
-    margin-top: 70%;
 }
 
 .counter {
     width: 88%;
+    height: 50%;
     user-select: none;
     align-items: center;
     text-align: center;
     border: 2px solid #219ba6;
     border-radius: 7px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     background-color: #61dafb;
-    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
 }
-
 
 .item {
     padding: 5px;
     width: 85%;
+    height: 25%;
     border: 2px solid #219ba6;
     border-radius: 7px;
     display: flex;
     justify-content: space-evenly;
 }
+
+.valueTable {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    height: 350px;
+    border: 2px solid #219ba6;
+    border-radius: 7px;
+}
+
+.info__count {
+    font-size: 40px;
+    padding-top: 7%;
+}
+
+/*.counterTable {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: space-around;*/
+/*    width: 88%;*/
+/*    height: 50%;*/
+/*    user-select: none;*/
+/*    align-items: center;*/
+/*    text-align: center;*/
+/*    border: 2px solid #219ba6;*/
+/*    border-radius: 7px;*/
+/*    margin-bottom: 15px;*/
+/*    background-color: #61dafb;*/
+/*}*/
+
+
 
 

@@ -2,43 +2,61 @@ import React, {useState} from 'react';
 import './App.css';
 import {Button} from "./components/Button";
 import {Board} from "./components/Board";
+import {ValueTable} from "./components/ValueTable/ValueTable";
 
-function App() {
+const App = () => {
 
-    const MAXVALUE = 5
     const STARTCOUNT = 0
+    const MAXVALUE = 5
 
-    const [count, setCount] = useState<number>(STARTCOUNT);
+    const [startCount, setStartCount] = useState<number>(STARTCOUNT);
+    const [maxCount, setMaxCount] = useState<number>(MAXVALUE);
+    const [count, setCount] = useState<number>(startCount);
     const [limit, setLimit] = useState<boolean>(true);
 
     const clickHandlerUp = () => {
         setCount(count + 1)
-        if (count >= MAXVALUE-1) {
+        if (count >= maxCount - 1) {
             setLimit(false)
         }
     }
-
     const clickHandlerReset = () => {
-        setCount(STARTCOUNT)
+        setCount(startCount)
         setLimit(true)
+    }
+    const setStartHandler = (value: number) => {
+        setCount(value)
+    }
+    const setMaxHandler = (value: number) => {
+        setMaxCount(value)
     }
 
     return (
+        <div className={'main'}>
 
-        <div className="App">
-            <div className='counter'>
-                <Board title={count} switcher={limit}/>
+            <div className="valueTable">
+                <ValueTable inputValueMax={maxCount}
+                            inputValueStart={startCount}
+                            setStart={setStartCount}
+                            setMax={setMaxCount}
+                            setStartHandler={setStartHandler}
+                            setMaxHandler={setMaxHandler}
+                />
             </div>
-            <div className='item'>
 
-                <Button onClick={clickHandlerUp} disabled={count > MAXVALUE-1}>
-                    inc
-                </Button>
+            <div className="boardCounter">
+                <div className='counter'>
+                    <Board title={count} switcher={limit}/>
+                </div>
+                <div className='item'>
+                    <Button onClick={clickHandlerUp} disabled={count > maxCount - 1}>
+                        inc
+                    </Button>
 
-                <Button onClick={clickHandlerReset} disabled={count <= 0}>
-                    reset
-                </Button>
-
+                    <Button onClick={clickHandlerReset} disabled={count <= 0}>
+                        reset
+                    </Button>
+                </div>
             </div>
         </div>
     );

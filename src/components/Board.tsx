@@ -1,4 +1,5 @@
 import React from 'react';
+import '../App.css';
 
 type BoarType = {
     title: number
@@ -7,10 +8,14 @@ type BoarType = {
 
 export const Board: React.FC<BoarType> = ({title, switcher}) => {
 
-    const styleCounter = {color: switcher ? '' : 'red'}
+    const styleCounter = switcher ? {} : {
+        color:'red',
+        fontSize: '48px',
+        paddingTop: '4%',
+    }
 
     return (
-        <h1 style={styleCounter}>{title}</h1>
+        <h1 className={'info__count'} style={styleCounter}>{title}</h1>
     );
 };
 

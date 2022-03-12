@@ -10,7 +10,7 @@
     padding: 0 10px 0 11px;
     margin: 5px;
     text-align: center;
-    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    /*box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;*/
     user-select: none;
 }
 .default:hover {
