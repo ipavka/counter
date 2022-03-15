@@ -1,14 +1,16 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
-import './ValueTable.css';
+import s from './ValueTable.module.css';
 import {Button} from "../Button";
 
 type ValueTablePropsType = {
-    setMax?: (value: number) => void
-    setStart?: (value: number) => void
-    inputValueMax?: number
-    inputValueStart?: number
+    setMax: (value: number) => void
+    setStart: (value: number) => void
+    inputValueMax: number
+    inputValueStart: number
     setStartHandler: (value: number) =>void
     setMaxHandler: (value: number) =>void
+    bordChangeState: (value: boolean) => void
+    errorInfoHandler: (value: boolean) => void
 }
 
 export const ValueTable: React.FC<ValueTablePropsType> = (
@@ -19,7 +21,8 @@ export const ValueTable: React.FC<ValueTablePropsType> = (
         setMaxHandler,
         inputValueMax,
         inputValueStart,
-        children
+        bordChangeState,
+        errorInfoHandler,
     }
 ) => {
 
@@ -28,69 +31,69 @@ export const ValueTable: React.FC<ValueTablePropsType> = (
         start: 'start value:',
     }
 
-    let [countMax, setCountMax] = useState(0);
-    let [countStart, setCountStart] = useState(0);
+    const [countMax, setCountMax] = useState<number>(inputValueMax);
+    const [countStart, setCountStart] = useState(inputValueStart);
+    const [change, setChange] = useState(true);
 
     useEffect(() => {
-        getFromStorageHandler()
-    }, [])
+        const startColorSet = countStart < 0 || countMax <= countStart
+        const maxColorSet = countMax <= countStart
+        const changeValue = countMax === inputValueMax && countStart === inputValueStart
+        const changeValue1 = countMax === inputValueMax && countStart === inputValueStart
+            || countStart < 0 || countMax <= countStart
 
-    const getFromStorageHandler = () => {
-         const valueStartCount = localStorage.getItem('startCount');
-         const valueMax = localStorage.getItem('maxCount');
-         if (valueStartCount) {
-             let newValue1 = JSON.parse(valueStartCount);
-             setCountStart(newValue1);
-         }
-         if (valueMax) {
-             let newValue2 = JSON.parse(valueMax);
-             setCountMax(newValue2);
-         }
-    }
+        setChange(changeValue1) // выключение кнопки set
+        bordChangeState(changeValue) // статут изменения
+        errorInfoHandler(maxColorSet || startColorSet) // ошибка
+    }, [countMax, countStart])
+
 
     const inputMaxChangeHandler = (e:ChangeEvent<HTMLInputElement>) => {
         let valueMax = +e.currentTarget.value
-        if(setMax){
-            setMax(valueMax)
-            setCountMax(valueMax)
-        }
-
+        setCountMax(valueMax)
     }
     const inputStartChangeHandler = (e:ChangeEvent<HTMLInputElement>) => {
         let valueStart = +e.currentTarget.value
-        if (setStart) {
-            setStart(valueStart)
-            setCountStart(valueStart)
-        }
+        setCountStart(valueStart)
     }
 
     const clickHandlerSet = () => {
-        console.log(countStart)
+        bordChangeState(true)
+        setChange(true)
         setStartHandler(countStart)
         setMaxHandler(countMax)
-        // localStorage.setItem('startCount', JSON.stringify(countStart))
-        // localStorage.setItem('maxCount', JSON.stringify(countMax))
-        // if (setStart) {
-        //     setStart(countStart)
-        // }
+        localStorage.setItem('startCount', JSON.stringify(countStart))
+        localStorage.setItem('maxCount', JSON.stringify(countMax))
+        if (setStart) {
+            setStart(countStart)
+        }
+        if(setMax){
+            setMax(countMax)
+        }
     }
+
+    const startColorSet = countStart < 0 || countMax <= countStart
+    const maxColorSet = countMax <= countStart
+
+    const inputMaxStyle = `${s.input__value} ${maxColorSet ? s.input__error : ''}`
+    const inputStartStyle = `${s.input__value} ${startColorSet ? s.input__error : ''}`
 
     return (
         <>
-            <div className='counterTable'>
-                <div className={'itemTable'}>
+            <div className={s.counterTable}>
+                <div className={s.itemTable}>
                     <h2>{valueNames.max}</h2>
-                    <input onChange={inputMaxChangeHandler} value={inputValueMax} type="number"/>
+                    <input className={inputMaxStyle} onChange={inputMaxChangeHandler} value={countMax} type="number"/>
                 </div>
 
-                <div className={'itemTable'}>
+                <div className={s.itemTable}>
                     <h2>{valueNames.start}</h2>
-                    <input onChange={inputStartChangeHandler} value={inputValueStart} type="number"/>
+                    <input className={inputStartStyle} onChange={inputStartChangeHandler} value={countStart} type="number"/>
                 </div>
             </div>
 
-            <div className={'item__table'}>
-                <Button onClick={clickHandlerSet}>set</Button>
+            <div className={s.item__table}>
+                <Button onClick={clickHandlerSet} disabled={change}>set</Button>
             </div>
         </>
     );

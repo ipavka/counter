@@ -10,6 +10,7 @@ export const Localstorage = () => {
     }, [])
 
     useEffect(() => {
+        console.log('13_useEffect')
         setToStorageHandler()
     }, [value])
 
