@@ -1,0 +1,11 @@
+.info__count {
+    font-size: 50px;
+    font-weight: bolder;
+    padding-top: 11%;
+}
+
+.info__error {
+    color: red;
+    font-size: 60px;
+    padding-top: 9%;
+}
