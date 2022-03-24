@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Button} from "./components/Button";
 import {Board} from "./components/Board";
@@ -6,22 +6,8 @@ import {ValueTable} from "./components/ValueTable/ValueTable";
 
 const App = () => {
 
-    function StartCount() {
-        const value = localStorage.getItem('startCount');
-        if (value) {
-            return JSON.parse(value);
-        } else return 0
-    }
-
-    function valueMax() {
-        const value = localStorage.getItem('maxCount');
-        if (value) {
-            return JSON.parse(value);
-        } else return 5
-    }
-
-    const [startCount, setStartCount] = useState<number>(StartCount());
-    const [maxCount, setMaxCount] = useState<number>(valueMax());
+    const [startCount, setStartCount] = useState<number>(0);
+    const [maxCount, setMaxCount] = useState<number>(5);
     const [count, setCount] = useState<number>(startCount);
     const [limit, setLimit] = useState<boolean>(true);
     const [countInfo, setCountInfo] = useState<boolean>(true);
@@ -43,6 +29,18 @@ const App = () => {
     const setMaxHandler = (value: number) => {
         setMaxCount(value)
     }
+
+    const setStartValues = () => {
+        const startValue = localStorage.getItem('startCount');
+        const maxValue = localStorage.getItem('maxCount');
+        if (startValue && maxValue) {
+            setStartCount(+startValue)
+            setMaxCount(+maxValue)
+        }
+    }
+    useEffect(() => {
+        setStartValues()
+    }, [])
 
     return (
         <div className={'main'}>
