@@ -43,7 +43,7 @@ export const ValueTable: React.FC<ValueTablePropsType> = (
             || countStart < 0 || countMax <= countStart
 
         setChange(changeValue1) // выключение кнопки set
-        bordChangeState(changeValue) // статут изменения
+        bordChangeState(changeValue) // статус изменения
         errorInfoHandler(maxColorSet || startColorSet) // ошибка
     }, [countMax, countStart])
 
