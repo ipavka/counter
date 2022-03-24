@@ -1,6 +1,6 @@
 import React, {ChangeEvent} from 'react';
 import s from './ValueTable.module.css';
-import {Button} from "../Button";
+import {Button} from "../Button/Button";
 
 type ValueTablePropsType = {
 

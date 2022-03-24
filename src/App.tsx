@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Button} from "./components/Button";
+import {Button} from "./components/Button/Button";
 import {Board} from "./components/BoardTable/Board";
 import {ValueTable} from "./components/ValueTable/ValueTable";
 
