@@ -2,14 +2,14 @@ import React from 'react';
 import s from './Board.module.css'
 
 type BoarType = {
-    title: number | string
-    errorInfo: boolean
+    title: number
+    error: boolean
 }
 
 export const Board: React.FC<BoarType> = (
     {
         title,
-        errorInfo,
+        error,
     }) => {
 
     // const hint = {
@@ -17,7 +17,7 @@ export const Board: React.FC<BoarType> = (
     //     error: 'incorrect value'
     // }
 
-    const styleCounter = `${s.info__count} ${errorInfo ? s.info__error : ''}`
+    const styleCounter = `${s.info__count} ${error ? s.info__error : ''}`
 
     return (
         <div className={styleCounter}>

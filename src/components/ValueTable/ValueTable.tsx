@@ -3,10 +3,20 @@ import s from './ValueTable.module.css';
 import {Button} from "../Button/Button";
 
 type ValueTablePropsType = {
-
+    startValue: number
+    maxValue: number
+    setStartValue: (value: number) => void
+    setMaxValue: (value: number) => void
 }
 
-export const ValueTable: React.FC<ValueTablePropsType> = () => {
+export const ValueTable: React.FC<ValueTablePropsType> = (
+    {
+        startValue,
+        maxValue,
+        setStartValue,
+        setMaxValue
+    }
+) => {
 
     const valueNames = {
         max: 'max value:',
@@ -14,10 +24,10 @@ export const ValueTable: React.FC<ValueTablePropsType> = () => {
     }
 
     const inputMaxChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log(e.currentTarget.value)
+        setMaxValue(+e.currentTarget.value)
     }
     const inputStartChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log(e.currentTarget.value)
+        setStartValue(+e.currentTarget.value)
     }
 
     const clickHandlerSet = () => {
@@ -32,12 +42,12 @@ export const ValueTable: React.FC<ValueTablePropsType> = () => {
             <div className={s.counterTable}>
                 <div className={s.itemTable}>
                     <h2>{valueNames.max}</h2>
-                    <input className={inputMaxStyle} onChange={inputMaxChangeHandler} value={5} type="number"/>
+                    <input className={inputMaxStyle} onChange={inputMaxChangeHandler} value={maxValue} type="number"/>
                 </div>
 
                 <div className={s.itemTable}>
                     <h2>{valueNames.start}</h2>
-                    <input className={inputStartStyle} onChange={inputStartChangeHandler} value={0} type="number"/>
+                    <input className={inputStartStyle} onChange={inputStartChangeHandler} value={startValue} type="number"/>
                 </div>
             </div>
 

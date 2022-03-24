@@ -9,32 +9,40 @@ const MAX_VALUE = 5
 
 const App = () => {
 
-    const [count, setCount] = useState<number>(START_VALUE);
-    const [limit, setLimit] = useState<boolean>(false);
-    const [errorInfo, setErrorInfo] = useState<boolean>(false);
+    const [count, setCount] = useState<number>(START_VALUE); // state счётчика
+    const [limit, setLimit] = useState<boolean>(false); // state максимального значения
+    const [error, setError] = useState<boolean>(false); // state ошибки
 
-    const clickHandlerUp = () => {
+    const [startValue, setStartValue] = useState<number>(START_VALUE); // state ошибки
+    const [maxValue, setMaxValue] = useState<number>(MAX_VALUE); // state ошибки
+
+    const clickHandlerUp = () => { // инкремент счётчика
         setCount(count + 1)
         if (count >= MAX_VALUE - 1) {
-            setLimit(true)
-            setErrorInfo(true)
+            setLimit(true) // отключение кнопки inc
+            setError(true) // красный цвет ошибки
         }
     }
-    const clickHandlerReset = () => {
-        setCount(START_VALUE)
-        setLimit(false)
-        setErrorInfo(false)
+    const clickHandlerReset = () => { // сброс счётчика
+        setCount(START_VALUE) // сброс на исходное значение
+        setLimit(false) // включение кнопки inc
+        setError(false) // отключение красного цвета ошибки
     }
 
     return (
         <div className={'main'}>
             <div className="valueTable">
-                <ValueTable/>
+                <ValueTable
+                    startValue={startValue}
+                    maxValue={maxValue}
+                    setStartValue={setStartValue}
+                    setMaxValue={setMaxValue}
+                />
             </div>
 
             <div className="boardCounter">
                 <div className='counter'>
-                    <Board errorInfo={errorInfo}
+                    <Board error={error}
                            title={count}/>
                 </div>
                 <div className='item'>
