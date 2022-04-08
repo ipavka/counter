@@ -3,63 +3,55 @@ import s from './ValueTable.module.css';
 import {Button} from "../Button/Button";
 import {NotifyType} from "../../App";
 import {hint} from "../BoardTable/Board";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    changeLimitAC,
+    incorrectErrorResetAC, notifyChangesErrorAC, notifyChangesNoneAC, notifyChangesSetAC,
+    resetValueAC,
+    setMaxValueAC,
+    setStartValueAC
+} from "../../bll/counter-reducer";
+import {AppStateType} from "../../bll/store";
 
-type ValueTablePropsType = {
-    startValue: number
-    maxValue: number
-    setStartValue: (value: number) => void
-    setMaxValue: (value: number) => void
-    error: boolean
-    setError: (value: boolean) => void
-    setNotify: (value: NotifyType) => void
-    notify: NotifyType
-    setCount: (value: number) => void
-}
+type ValueTablePropsType = { error: boolean }
 
-export const ValueTable: React.FC<ValueTablePropsType> = (
-    {
-        startValue,
-        maxValue,
-        setStartValue,
-        setMaxValue,
-        error,
-        setError,
-        setNotify,
-        notify,
-        setCount,
-    }
-) => {
+export const ValueTable: React.FC<ValueTablePropsType> = ({error, }) => {
+
+    const dispatch = useDispatch()
+    const startValue = useSelector<AppStateType, number>(state => state.counter.startValue); // Для импута START
+    const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue); // Для импута MAX
+    const notify = useSelector<AppStateType, NotifyType>(state => state.counter.notify); // инфо панель "NotifyType"
 
     useEffect(() => { // следит за ошибкой ввода START/MAX сетает ошибку, выводит надпись или отменяет ошибку
         if (maxValue < 0 || startValue >= maxValue) {
-            setError(true);
-            setNotify('incorrect value');
+            dispatch(incorrectErrorResetAC(true)); // ошибка, красный импут
+            dispatch(notifyChangesErrorAC('incorrect value'))
         } else if (startValue < 0 || startValue >= maxValue) {
-            setError(true);
-            setNotify('incorrect value');
+            dispatch(incorrectErrorResetAC(true)); // ошибка, красный импут
+            dispatch(notifyChangesErrorAC('incorrect value'))
         } else {
-            setError(false);
+            dispatch(incorrectErrorResetAC(false)); // сброс ошибки(отмена красного импута)
+            dispatch(resetValueAC(startValue)); // сброс значения в Board при изменении Max/Start значений
         }
     }, [startValue, maxValue])
 
     const inputMaxChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(+e.currentTarget.value)
-        // проверка если уже есть в сетейте этот результат
-        if (notify !== hint.correct) setNotify('enter value and press "set"'); // ???
+        dispatch(setMaxValueAC(Number(e.currentTarget.value)));
+        if (notify !== hint.correct) dispatch(notifyChangesSetAC('enter value and press "set"')); // ???
 
     }
     const inputStartChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setStartValue(+e.currentTarget.value)
-        // проверка если уже есть в сетейте этот результат
-        if (notify !== hint.correct) setNotify('enter value and press "set"'); // ???
+        dispatch(setStartValueAC(Number(e.currentTarget.value)))
+        if (notify !== hint.correct) dispatch(notifyChangesSetAC('enter value and press "set"')); // ???
     }
     const clickHandlerSet = () => {
         localStorage.setItem('maxCount', JSON.stringify(maxValue))
         localStorage.setItem('startCount', JSON.stringify(startValue))
-        setNotify('')
-        setCount(startValue)
-        setMaxValue(maxValue)
-        setStartValue(startValue)
+        dispatch(notifyChangesNoneAC(''))
+        dispatch(resetValueAC(startValue)) // сброс значения...??
+        dispatch(changeLimitAC(false)) // сброс disable кнопки INC
+        dispatch(setMaxValueAC(maxValue));
+        dispatch(setStartValueAC(startValue));
     }
 
     const inputMaxStyle = error ? `${s.input__value} ${s.input__error}` : s.input__value

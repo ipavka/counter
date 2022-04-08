@@ -3,60 +3,53 @@ import './App.css';
 import {Button} from "./components/Button/Button";
 import {Board} from "./components/BoardTable/Board";
 import {ValueTable} from "./components/ValueTable/ValueTable";
+import {useDispatch, useSelector} from "react-redux";
+import {AppStateType} from "./bll/store";
+import {changeLimitAC, incCounterValueAC, resetValueAC, setMaxValueAC, setStartValueAC} from "./bll/counter-reducer";
 
-const MAX_VALUE = 5
-const START_VALUE = 0
+
 export type NotifyType = 'enter value and press "set"' | 'incorrect value' | ''
 
 const App = () => {
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const startValue = localStorage.getItem('startCount');
         const maxValue = localStorage.getItem('maxCount');
         if (startValue) {
-            setCount(JSON.parse(startValue))
-            setStartValue(+JSON.parse(startValue))
+            dispatch(resetValueAC(Number(startValue)));
+            dispatch(setStartValueAC(Number(JSON.parse(startValue))));
         }
         if (maxValue) {
-            setMaxValue(+JSON.parse(maxValue))
+            dispatch(setMaxValueAC(Number(JSON.parse(maxValue))));
         }
     }, [])
 
 
-    const [count, setCount] = useState<number>(START_VALUE); // state увеличения счётчика
-    const [limit, setLimit] = useState<boolean>(false); // максимального значения, отключение кнопки INC
-    const [error, setError] = useState<boolean>(false); // state ошибки <incorrect value>
+    const count = useSelector<AppStateType, number>(state => state.counter.count); // логика увеличения счётчика
+    const limit = useSelector<AppStateType, boolean>(state => state.counter.limit); // максимального значения, отключение кнопки INC
+    const error = useSelector<AppStateType, boolean>(state => state.counter.error); // state ошибки <incorrect value>
+    const startValue = useSelector<AppStateType, number>(state => state.counter.startValue); // Для импута START
+    const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue); // Для импута MAX
+    const notify = useSelector<AppStateType, NotifyType>(state => state.counter.notify); // инфо панель "NotifyType"
 
-    const [startValue, setStartValue] = useState<number>(START_VALUE); // state Для импута START
-    const [maxValue, setMaxValue] = useState<number>(MAX_VALUE); // state Для импута MAX
 
-    const [notify, setNotify] = useState<NotifyType>(''); // инфо панель "NotifyType"
-
-    const clickHandlerUp = () => { // инкремент счётчика
-        setCount(count + 1)
+    const clickHandlerUp = () => {
+        dispatch(incCounterValueAC()); // инкремент счётчика
         if (count >= maxValue - 1) {
-            setLimit(true) // отключение кнопки inc
+            dispatch(changeLimitAC(true)); // отключение кнопки inc
         }
     }
-    const clickHandlerReset = () => { // сброс счётчика
-        setCount(startValue) // сброс на исходное значение
-        setLimit(false) // включение кнопки inc
+    const clickHandlerReset = () => {
+        dispatch(changeLimitAC(false)); // включение кнопки inc
+        dispatch(resetValueAC(startValue)); // сброс на исходное значение
     }
 
     return (
         <div className='main'>
             <div className="valueTable">
-                <ValueTable
-                    startValue={startValue}
-                    maxValue={maxValue}
-                    setStartValue={setStartValue}
-                    setMaxValue={setMaxValue}
-                    error={error}
-                    setError={setError}
-                    setNotify={setNotify}
-                    notify={notify}
-                    setCount={setCount}
-                />
+                <ValueTable error={error}/>
             </div>
 
             <div className="boardCounter">
@@ -73,7 +66,7 @@ const App = () => {
                         INC
                     </Button>
 
-                    <Button onClick={clickHandlerReset} disabled={count <= startValue}>
+                    <Button onClick={clickHandlerReset} disabled={count <= startValue || error}>
                         RESET
                     </Button>
                 </div>
