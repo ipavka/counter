@@ -4,8 +4,12 @@
     padding-top: 11%;
 }
 
-.info__error {
+.maxValue {
     color: red;
     font-size: 60px;
     padding-top: 9%;
+}
+
+.errorInfo {
+    font-size: 50px;
 }

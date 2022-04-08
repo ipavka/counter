@@ -1,58 +1,80 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Button} from "./components/Button/Button";
 import {Board} from "./components/BoardTable/Board";
 import {ValueTable} from "./components/ValueTable/ValueTable";
 
-const START_VALUE = 0
 const MAX_VALUE = 5
+const START_VALUE = 0
+export type NotifyType = 'enter value and press "set"' | 'incorrect value' | ''
 
 const App = () => {
 
-    const [count, setCount] = useState<number>(START_VALUE); // state счётчика
-    const [limit, setLimit] = useState<boolean>(false); // state максимального значения
-    const [error, setError] = useState<boolean>(false); // state ошибки
+    useEffect(() => {
+        const startValue = localStorage.getItem('startCount');
+        const maxValue = localStorage.getItem('maxCount');
+        if (startValue) {
+            setCount(JSON.parse(startValue))
+            setStartValue(+JSON.parse(startValue))
+        }
+        if (maxValue) {
+            setMaxValue(+JSON.parse(maxValue))
+        }
+    }, [])
 
-    const [startValue, setStartValue] = useState<number>(START_VALUE); // state ошибки
-    const [maxValue, setMaxValue] = useState<number>(MAX_VALUE); // state ошибки
+
+    const [count, setCount] = useState<number>(START_VALUE); // state увеличения счётчика
+    const [limit, setLimit] = useState<boolean>(false); // максимального значения, отключение кнопки INC
+    const [error, setError] = useState<boolean>(false); // state ошибки <incorrect value>
+
+    const [startValue, setStartValue] = useState<number>(START_VALUE); // state Для импута START
+    const [maxValue, setMaxValue] = useState<number>(MAX_VALUE); // state Для импута MAX
+
+    const [notify, setNotify] = useState<NotifyType>(''); // инфо панель "NotifyType"
 
     const clickHandlerUp = () => { // инкремент счётчика
         setCount(count + 1)
-        if (count >= MAX_VALUE - 1) {
+        if (count >= maxValue - 1) {
             setLimit(true) // отключение кнопки inc
-            setError(true) // красный цвет ошибки
         }
     }
     const clickHandlerReset = () => { // сброс счётчика
-        setCount(START_VALUE) // сброс на исходное значение
+        setCount(startValue) // сброс на исходное значение
         setLimit(false) // включение кнопки inc
-        setError(false) // отключение красного цвета ошибки
     }
 
     return (
-        <div className={'main'}>
+        <div className='main'>
             <div className="valueTable">
                 <ValueTable
                     startValue={startValue}
                     maxValue={maxValue}
                     setStartValue={setStartValue}
                     setMaxValue={setMaxValue}
+                    error={error}
+                    setError={setError}
+                    setNotify={setNotify}
+                    notify={notify}
+                    setCount={setCount}
                 />
             </div>
 
             <div className="boardCounter">
                 <div className='counter'>
                     <Board error={error}
-                           title={count}/>
+                           title={count}
+                           notify={notify}
+                           maxValue={maxValue}
+                    />
                 </div>
                 <div className='item'>
                     <Button onClick={clickHandlerUp}
-                            disabled={limit}>
-                        inc
+                            disabled={limit || notify !== ''}>
+                        INC
                     </Button>
 
-                    <Button onClick={clickHandlerReset} disabled={count <= START_VALUE}>
-                        reset
+                    <Button onClick={clickHandlerReset} disabled={count <= startValue}>
+                        RESET
                     </Button>
                 </div>
             </div>
